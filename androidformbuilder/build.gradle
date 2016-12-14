@@ -21,18 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 apply plugin: 'com.android.library'
 
 android {
-  compileSdkVersion 24
-  buildToolsVersion "24.0.2"
+  compileSdkVersion 25
+  buildToolsVersion "25.0.2"
 
   defaultConfig {
     minSdkVersion 19
-    targetSdkVersion 24
+    targetSdkVersion 25
     versionCode 1
-    versionName "1.0"
+    versionName "0.1"
 
     testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -50,6 +49,35 @@ dependencies {
   androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
     exclude group: 'com.android.support', module: 'support-annotations'
   })
-  compile 'com.android.support:appcompat-v7:24.2.1'
+  compile 'com.android.support:appcompat-v7:25.0.1'
   testCompile 'junit:junit:4.12'
 }
+
+ext {
+  bintrayRepo = 'maven'
+  bintrayName = ARTIFACT_ID
+
+  publishedGroupId = GROUP_ID
+  libraryName = POM_NAME
+  artifact = ARTIFACT_ID
+
+  libraryDescription = POM_DESCRIPTION
+
+  siteUrl = POM_URL
+  gitUrl = POM_SCM_URL
+  githubRepository= POM_SCM_CONNECTION
+
+  libraryVersion = VERSION_NAME
+
+  developerId = POM_DEVELOPER_ID
+  developerName = POM_DEVELOPER_NAME
+  developerEmail = POM_DEVELOPER_EMAIL
+
+  licenseName = POM_LICENCE_NAME
+  licenseUrl = POM_LICENCE_URL
+  allLicenses = ["MIT"]
+}
+
+// Place it at the end of the file
+apply from: 'https://raw.githubusercontent.com/chilinh/AndroidTools/master/JCenterPublish/install.gradle'
+apply from: 'https://raw.githubusercontent.com/chilinh/AndroidTools/master/JCenterPublish/bintray.gradle'
