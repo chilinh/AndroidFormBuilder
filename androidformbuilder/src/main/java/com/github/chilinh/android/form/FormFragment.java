@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) [2016] [linh]
+ * Copyright (c) [2017] [linh]
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,25 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-package com.github.chilinh.androidformbuilder;
+package com.github.chilinh.android.form;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-public class MainActivity extends AppCompatActivity {
+/**
+ * Created by Linh on 1/17/17.
+ */
+public abstract class FormFragment extends Fragment implements Callback.Submit<Fragment> {
+
+  protected abstract Form createForm();
+
+  @Nullable
+  @Override
+  public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    return inflater.inflate(R.layout.base_form_fragment, container, false);
+  }
 
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
-
-    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-    setSupportActionBar(toolbar);
-
-    getSupportFragmentManager().beginTransaction()
-      .replace(R.id.content, new MainFragment())
-      .commit();
+  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    Form form = createForm();
+    form.buildToFragment(this, this);
   }
 }

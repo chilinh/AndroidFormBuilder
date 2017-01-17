@@ -27,6 +27,8 @@ package com.github.chilinh.android.form;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -242,9 +244,44 @@ public class Form {
     window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
   }
 
-  //public Fragment buildFragment(Context context, FragmentManager fm) {
-  //  return null;
-  //}
+  private static final String FORM_FRAGMENT_MODEL = "#gh_form_model";
+
+  public void buildToFragment(Fragment fragment, final Callback.Submit<Fragment> submitCb) {
+    View view = fragment.getView();
+    FragmentManager fm = fragment.getActivity().getSupportFragmentManager();
+    FormModelFragment model = (FormModelFragment) fm.findFragmentByTag(FORM_FRAGMENT_MODEL);
+    if (model == null) {
+      model = new FormModelFragment();
+      fm.beginTransaction().add(model, FORM_FRAGMENT_MODEL).commit();
+    }
+    mModel = model;
+
+    if (TextUtils.isEmpty(mSubmitBtn)) {
+      mSubmitBtn = "Summit";
+    }
+
+    ViewGroup group = (ViewGroup) view.findViewById(R.id.form_elements_container);
+    makeFormView(group);
+
+    View submitBtn = view.findViewById(R.id.button_form_submit);
+    if (submitBtn != null) {
+      submitBtn.setClickable(true);
+      submitBtn.setFocusable(true);
+
+      submitBtn.setOnClickListener(
+        (v) -> {
+          if (validate(mContext)) {
+            if (submitCb != null) {
+              if (submitCb.validate(fragment, Form.this)) {
+                submitCb.onSubmit(fragment, Form.this);
+              }
+              return;
+            }
+          }
+        }
+      );
+    }
+  }
 
   public AlertDialog buildDialog(Context context, final Callback.Submit<DialogInterface> submitCb, final Callback.Dismiss<DialogInterface> dismissCb) {
     mModel = new FormModelDialog();
